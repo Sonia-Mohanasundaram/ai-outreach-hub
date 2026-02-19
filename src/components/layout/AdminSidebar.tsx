@@ -29,11 +29,13 @@ export const AdminSidebar: React.FC = () => {
   };
 
   return (
-    <aside className="w-64 min-h-screen bg-sidebar border-r border-sidebar-border flex flex-col">
-      <div className="p-6 border-b border-sidebar-border">
+    <aside className="w-64 min-h-screen bg-gradient-to-b from-purple-700 via-purple-800 to-indigo-900 flex flex-col shadow-xl">
+      <div className="p-6 border-b border-white/10">
         <div className="flex items-center gap-2">
-          <Shield className="h-6 w-6 text-sidebar-primary" />
-          <span className="font-bold text-lg text-sidebar-foreground">Admin Panel</span>
+          <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
+            <Shield className="h-5 w-5 text-white" />
+          </div>
+          <span className="font-bold text-lg text-white">Admin Panel</span>
         </div>
       </div>
 
@@ -43,10 +45,10 @@ export const AdminSidebar: React.FC = () => {
             key={item.path}
             to={item.path}
             className={({ isActive }) =>
-              `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+              `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
                 isActive
-                  ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                  : "text-sidebar-muted hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
+                  ? "bg-white/20 text-white shadow-lg backdrop-blur-sm"
+                  : "text-white/70 hover:bg-white/10 hover:text-white"
               }`
             }
           >
@@ -56,10 +58,10 @@ export const AdminSidebar: React.FC = () => {
         ))}
       </nav>
 
-      <div className="p-4 border-t border-sidebar-border">
+      <div className="p-4 border-t border-white/10">
         <button
           onClick={handleLogout}
-          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-sidebar-muted hover:bg-destructive/10 hover:text-destructive transition-colors w-full"
+          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-white/70 hover:bg-red-500/20 hover:text-red-200 transition-colors w-full"
         >
           <LogOut className="h-4 w-4" />
           Logout
