@@ -4,50 +4,62 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "@/contexts/ThemeContext";
-import { AuthProvider, useAuth } from "@/contexts/AuthContext";
-import { UserLayout } from "@/components/layout/UserLayout";
-import { AdminLayout } from "@/components/layout/AdminLayout";
-import Landing from "@/pages/Landing";
-import RoleSelection from "@/pages/RoleSelection";
-import UserDashboard from "@/pages/user/Dashboard";
-import Generate from "@/pages/user/Generate";
-import UploadPage from "@/pages/user/Upload";
-import UserHistory from "@/pages/user/History";
-import UserSettings from "@/pages/user/Settings";
-import AdminDashboard from "@/pages/admin/Dashboard";
-import AdminUsers from "@/pages/admin/Users";
-import AdminActivity from "@/pages/admin/Activity";
-import AdminSettings from "@/pages/admin/Settings";
+import { HospitalAuthProvider, useHospitalAuth } from "@/contexts/HospitalAuthContext";
+import { HospitalDataProvider } from "@/contexts/HospitalDataContext";
+
+import HospitalLanding from "@/pages/HospitalLanding";
+import Login from "@/pages/Login";
+import Signup from "@/pages/Signup";
 import NotFound from "@/pages/NotFound";
+
+import PatientLayout from "@/components/layout/PatientLayout";
+import PatientDashboard from "@/pages/patient/Dashboard";
+import PatientDoctors from "@/pages/patient/Doctors";
+import PatientAppointments from "@/pages/patient/Appointments";
+
+import DoctorLayout from "@/components/layout/DoctorLayout";
+import DoctorDashboard from "@/pages/doctor/Dashboard";
+import DoctorAvailability from "@/pages/doctor/Availability";
+import DoctorSchedule from "@/pages/doctor/Schedule";
+
+import HospitalAdminLayout from "@/components/layout/HospitalAdminLayout";
+import AdminDashboardPage from "@/pages/admin/HospitalDashboard";
+import AdminDoctors from "@/pages/admin/Doctors";
+import AdminAppointments from "@/pages/admin/Appointments";
+import AdminPatients from "@/pages/admin/Patients";
 
 const queryClient = new QueryClient();
 
-const ProtectedRoute: React.FC<{ children: React.ReactNode; role: "user" | "admin" }> = ({ children, role }) => {
-  const { user, isAuthenticated } = useAuth();
-  if (!isAuthenticated) return <Navigate to="/auth" replace />;
+const ProtectedRoute: React.FC<{ children: React.ReactNode; role: string }> = ({ children, role }) => {
+  const { user, isAuthenticated } = useHospitalAuth();
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
   if (user?.role !== role) return <Navigate to="/" replace />;
   return <>{children}</>;
 };
 
 const AppRoutes = () => (
   <Routes>
-    <Route path="/" element={<Landing />} />
-    <Route path="/auth" element={<RoleSelection />} />
+    <Route path="/" element={<HospitalLanding />} />
+    <Route path="/login" element={<Login />} />
+    <Route path="/signup" element={<Signup />} />
 
-    <Route path="/user" element={<ProtectedRoute role="user"><UserLayout /></ProtectedRoute>}>
-      <Route path="dashboard" element={<UserDashboard />} />
-      <Route path="generate" element={<Generate />} />
-      <Route path="upload" element={<UploadPage />} />
-      <Route path="history" element={<UserHistory />} />
-      <Route path="settings" element={<UserSettings />} />
+    <Route path="/patient" element={<ProtectedRoute role="patient"><PatientLayout /></ProtectedRoute>}>
+      <Route path="dashboard" element={<PatientDashboard />} />
+      <Route path="doctors" element={<PatientDoctors />} />
+      <Route path="appointments" element={<PatientAppointments />} />
     </Route>
 
-    <Route path="/admin" element={<ProtectedRoute role="admin"><AdminLayout /></ProtectedRoute>}>
-      <Route path="dashboard" element={<AdminDashboard />} />
-      <Route path="users" element={<AdminUsers />} />
-      <Route path="activity" element={<AdminActivity />} />
-      <Route path="history" element={<AdminActivity />} />
-      <Route path="settings" element={<AdminSettings />} />
+    <Route path="/doctor" element={<ProtectedRoute role="doctor"><DoctorLayout /></ProtectedRoute>}>
+      <Route path="dashboard" element={<DoctorDashboard />} />
+      <Route path="availability" element={<DoctorAvailability />} />
+      <Route path="schedule" element={<DoctorSchedule />} />
+    </Route>
+
+    <Route path="/admin" element={<ProtectedRoute role="admin"><HospitalAdminLayout /></ProtectedRoute>}>
+      <Route path="dashboard" element={<AdminDashboardPage />} />
+      <Route path="doctors" element={<AdminDoctors />} />
+      <Route path="appointments" element={<AdminAppointments />} />
+      <Route path="patients" element={<AdminPatients />} />
     </Route>
 
     <Route path="*" element={<NotFound />} />
@@ -57,15 +69,17 @@ const AppRoutes = () => (
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider>
-      <AuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <AppRoutes />
-          </BrowserRouter>
-        </TooltipProvider>
-      </AuthProvider>
+      <HospitalAuthProvider>
+        <HospitalDataProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <AppRoutes />
+            </BrowserRouter>
+          </TooltipProvider>
+        </HospitalDataProvider>
+      </HospitalAuthProvider>
     </ThemeProvider>
   </QueryClientProvider>
 );
