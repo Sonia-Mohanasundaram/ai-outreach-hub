@@ -44,12 +44,15 @@
     --sidebar-ring: 217 91% 60%;
     --sidebar-muted: 215 16% 47%;
 
-    --success: 142 76% 36%;
+    --success: 160 84% 39%;
     --success-foreground: 0 0% 100%;
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
     --info: 199 89% 48%;
     --info-foreground: 0 0% 100%;
+
+    --hospital-green: 160 84% 39%;
+    --hospital-green-foreground: 0 0% 100%;
   }
 
   .dark {
