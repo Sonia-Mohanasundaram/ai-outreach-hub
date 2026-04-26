@@ -2,84 +2,29 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/contexts/ThemeContext";
-import { HospitalAuthProvider, useHospitalAuth } from "@/contexts/HospitalAuthContext";
-import { HospitalDataProvider } from "@/contexts/HospitalDataContext";
 
-import HospitalLanding from "@/pages/HospitalLanding";
-import Login from "@/pages/Login";
-import Signup from "@/pages/Signup";
+import Landing from "@/pages/Landing";
+import Dashboard from "@/pages/Dashboard";
 import NotFound from "@/pages/NotFound";
 
-import PatientLayout from "@/components/layout/PatientLayout";
-import PatientDashboard from "@/pages/patient/Dashboard";
-import PatientDoctors from "@/pages/patient/Doctors";
-import PatientAppointments from "@/pages/patient/Appointments";
-
-import DoctorLayout from "@/components/layout/DoctorLayout";
-import DoctorDashboard from "@/pages/doctor/Dashboard";
-import DoctorAvailability from "@/pages/doctor/Availability";
-import DoctorSchedule from "@/pages/doctor/Schedule";
-
-import HospitalAdminLayout from "@/components/layout/HospitalAdminLayout";
-import AdminDashboardPage from "@/pages/admin/HospitalDashboard";
-import AdminDoctors from "@/pages/admin/Doctors";
-import AdminAppointments from "@/pages/admin/Appointments";
-import AdminPatients from "@/pages/admin/Patients";
-
 const queryClient = new QueryClient();
-
-const ProtectedRoute: React.FC<{ children: React.ReactNode; role: string }> = ({ children, role }) => {
-  const { user, isAuthenticated } = useHospitalAuth();
-  if (!isAuthenticated) return <Navigate to="/login" replace />;
-  if (user?.role !== role) return <Navigate to="/" replace />;
-  return <>{children}</>;
-};
-
-const AppRoutes = () => (
-  <Routes>
-    <Route path="/" element={<HospitalLanding />} />
-    <Route path="/login" element={<Login />} />
-    <Route path="/signup" element={<Signup />} />
-
-    <Route path="/patient" element={<ProtectedRoute role="patient"><PatientLayout /></ProtectedRoute>}>
-      <Route path="dashboard" element={<PatientDashboard />} />
-      <Route path="doctors" element={<PatientDoctors />} />
-      <Route path="appointments" element={<PatientAppointments />} />
-    </Route>
-
-    <Route path="/doctor" element={<ProtectedRoute role="doctor"><DoctorLayout /></ProtectedRoute>}>
-      <Route path="dashboard" element={<DoctorDashboard />} />
-      <Route path="availability" element={<DoctorAvailability />} />
-      <Route path="schedule" element={<DoctorSchedule />} />
-    </Route>
-
-    <Route path="/admin" element={<ProtectedRoute role="admin"><HospitalAdminLayout /></ProtectedRoute>}>
-      <Route path="dashboard" element={<AdminDashboardPage />} />
-      <Route path="doctors" element={<AdminDoctors />} />
-      <Route path="appointments" element={<AdminAppointments />} />
-      <Route path="patients" element={<AdminPatients />} />
-    </Route>
-
-    <Route path="*" element={<NotFound />} />
-  </Routes>
-);
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider>
-      <HospitalAuthProvider>
-        <HospitalDataProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <AppRoutes />
-            </BrowserRouter>
-          </TooltipProvider>
-        </HospitalDataProvider>
-      </HospitalAuthProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Landing />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
     </ThemeProvider>
   </QueryClientProvider>
 );
